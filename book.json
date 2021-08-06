@@ -1,0 +1,65 @@
+{
+   "title": "xxxxxx",
+   "description": "xxxxxxxx",
+   "author": "小王",
+   "output.name": "site",
+   "language": "zh-hans",
+   "gitbook": "3.2.3",
+   "root": ".",
+   "styles": {
+     "website": "styles/website.css"
+   },
+   "plugins": [
+       "-lunr",
+       "-search",
+       "-highlight",
+       "-livereload",
+       "-sharing",
+       "search-pro",
+       "prism",
+       "prism-themes",
+       "advanced-emoji",
+       "splitter",
+       "tbfed-pagefooter",
+       "favicon",
+       "toggle-chapters",
+       "anchor-navigation-ex-toc"
+   ],
+
+   "pluginsConfig": {
+       "theme-default": {
+           "showLevel": false
+       },
+      "search-pro": {
+       "cutWordLib": "nodejieba",
+       "defineWord" : ["Gitbook Use"]
+       },    
+       "prism": {
+           "css": [
+               "prismjs/themes/prism-okaidia.css"
+           ]
+       },
+       "tbfed-pagefooter": {
+           "copyright": "Copyright © xxxxx.com 2018",
+           "modify_label": "该文件修订时间：",
+           "modify_format": "YYYY-MM-DD HH:mm:ss"
+       },
+       "favicon": {
+           "shortcut": "favicon.ico",
+           "bookmark": "favicon.ico"
+       },
+       "anchor-navigation-ex": {
+           "associatedWithSummary":false,
+           "showLevel":true,
+           "multipleH1": true,
+           "mode": "float",
+           "pageTop": {
+           "showLevelIcon": false,
+           "level1Icon": "fa fa-hand-o-right",
+           "level2Icon": "fa fa-hand-o-right",
+           "level3Icon": "fa fa-hand-o-right"
+           }
+       }
+   }
+}
+

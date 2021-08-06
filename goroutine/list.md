@@ -4,9 +4,9 @@
 
 
 
-* [Go:How Does a Goroutine Start and Exit?](Go-How-Does-a-Goroutine-Start-and-Exit.md)
+* [Go:How Does a Goroutine Start and Exit?](./Go-How-Does-a-Goroutine-Start-and-Exit.md)
 * [Go: gsignal, Master of Signals]()
-* [Go:What Does a Goroutine Switch Actually Involve?]()
+* [Go:What Does a Goroutine Switch Actually Involve?](./Go-How-Does-a-Goroutine-Start-and-Exit.md)
 * [Go:How Does Go Recycle Goroutines?]()
 * [Go:g0, Special Goroutine]()
 * [Go: Concurrency & Scheduler Affinity]()
