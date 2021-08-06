@@ -38,7 +38,7 @@ func main() {
 
 完成上述操作之后, 这个 Goroutine 不会立即获得运行时. 这个新建的 Goroutine 会入队到本地队列的列头, 等待下一轮 Go 调度器调度. 至此, 我们得到如下图所示的 Goroutine 状态: 
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-start-exit-1.png)
+![](../img/goroutine-start-exit-1.png)
 
 把这个新建的 Goroutine 放到最前面, 这样这个 Goroutine 就可以在下一次调度时候第一个被执行. 当被分配到运行时后, 这个 Goroutine 会在当前线程运行, 也有可能在另外一个线程上(这种情况一般发生在调度器工作窃取被触发时).
 
@@ -46,7 +46,7 @@ func main() {
 
 为了让大家更了解 Goroutine 启动过程, 我们从汇编指令角度来看看发生了什么: 
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-start-exit-2.png)
+![](../img/goroutine-start-exit-2.png)
 
 
 
@@ -92,7 +92,7 @@ func main(){
 
 从`asm_amd64` 汇编文件中, 我们看到`goexit`函数: 
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-start-exit-3.png)
+![](../img/goroutine-start-exit-3.png)
 
 这不操作之后, Go 就会切换到 `g0` , 继续调度其他 Goroutine. 
 

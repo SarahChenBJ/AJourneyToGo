@@ -21,11 +21,11 @@ Go 根据两种断点将 Goroutine 调度到线程上：
 
 * 将运行中的 `g` 切换到 `g0`：
 
-  ![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-2.png)
+  ![](../img/goroutine-switch-2.png)
 
 * 将 `g0` 切换到下一个将要运行的 `g`：
 
-  ![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-3.png)
+  ![](../img/goroutine-switch-3.png)
 
 在 Go 中，goroutine 的切换相当轻便，其中需要保存的状态仅仅涉及以下两个：
 
@@ -39,21 +39,21 @@ Go 根据两种断点将 Goroutine 调度到线程上：
 
 这里通过基于通道的 ` 生产者/消费者模式 ` 来举例说明，其中一个 Goroutine 产生数据，而另一些则消费数据，代码如下：
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-4.png)
+![](../img/goroutine-switch-4.png)
 
 消费者仅仅是打印从 0 到 99 的偶数。我们将注意力放在第一个 goroutine（生产者）上，它将数字添加到缓冲区。当缓冲区已满时，它将在发送消息时被阻塞。此时，Go 必须切换到 `g0` 并调度另一个 Goroutine 来运行。
 
 如前所述，Go 首先需要保存当前执行的指令，以便稍后在同一条指令上恢复 goroutine。程序计数器（`PC`）保存在 Goroutine 的内部结构中：
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-5.png)
+![](../img/goroutine-switch-5.png)
 
 可以通过 `go tool objdump` 命令找到对应的指令及其地址，这是生产者的指令：
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-6.png)
+![](../img/goroutine-switch-6.png)
 
 程序逐条指令的执行直到在函数 `runtime.chansend1` 处阻塞在通道上。 Go 将当前程序计数器保存到当前 Goroutine 的内部属性中。在我们的示例中，Go 使用运行时的内部地址 `0x4268d0` 和方法 `runtime.chansend1` 保存程序计数器：
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-7.png)
+![](../img/goroutine-switch-7.png)
 
 然后，当 `g0` 唤醒 Goroutine 时，它将在同一指令处继续执行，继续将数值循环的推入通道。现在，让我们将视线移到 Goroutine 切换期间堆栈的管理。
 
@@ -61,15 +61,15 @@ Go 根据两种断点将 Goroutine 调度到线程上：
 
 在被阻塞之前，正在运行的 Goroutine 具有其原始堆栈，该堆栈包含临时存储器，例如变量 `i`：
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-8.png)
+![](../img/goroutine-switch-8.png)
 
 然后，当它在通道上阻塞时，goroutine 将切换到 `g0` 及其堆栈（更大的堆栈）：
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-9.png)
+![](../img/goroutine-switch-9.png)
 
 在切换之前，堆栈将被保存，以便在 Goroutine 再次运行时进行恢复：
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-10.png)
+![](../img/goroutine-switch-10.png)
 
 现在，我们对 Goroutine 切换中涉及的不同操作有了一个完整的了解，让我们继续看看它是如何影响性能的。
 
@@ -92,7 +92,7 @@ Go 根据两种断点将 Goroutine 调度到线程上：
 
 结果如下：
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-switch-11.png)
+![](../img/goroutine-switch-11.png)
 
 从 `g` 到 `g0` 或从 `g0` 到 `g` 的切换是相当迅速的，它们只包含少量固定的指令。相反，对于调度阶段，调度程序需要检查许多资源以便确定下一个要运行的 goroutine，根据程序的不同，此阶段可能会花费更多的时间。
 

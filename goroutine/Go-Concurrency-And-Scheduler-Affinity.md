@@ -1,12 +1,12 @@
 # Go: 并发及调度器的亲合性原理
 
-将 Goroutine 从一个 OS 线程切换到另一个线程需要一定开销，并且，如果这种操作过于频繁的话会降低应用性能。无论如何，随着时间的流逝，Go 的调度器已经解决了这个问题。现在，当并发工作的时候，调度器提供了 Goroutine 和线程之间的亲和性。让我们回顾历史来了解这一改进。
+  将 Goroutine 从一个 OS 线程切换到另一个线程需要一定开销，并且，如果这种操作过于频繁的话会降低应用性能。无论如何，随着时间的流逝，Go 的调度器已经解决了这个问题。现在，当并发工作的时候，调度器提供了 Goroutine 和线程之间的亲和性。让我们回顾历史来了解这一改进。
 
 ## 最初的问题
 
 在 Go 的早期阶段，Go 1.0 和 1.1，当以更多的 OS 线程（即，更高的 `GOMAXPROCS` 的值）运行并发代码的时候，该语言会面临性能下降的问题。让我们以一个在文档中使用的示例开始，该示例计算质数：
 
-![](/Users/sarahchen/AJourneyToGo/img/ccn-scheduler-affinity-1.png)
+![](../img/ccn-scheduler-affinity-1.png)
 
 这是在 Go 1.0.3，使用不同 `GOMAXPROCS` 值计算前十万个质数的基准测试结果：
 
@@ -20,21 +20,21 @@ Sieve-8  20.4s ± 0%
 
 要理解这样的结果，我们需要先理解当时调度器是如何设计的。在 Go 的最初版本，调度器只有一个全局队列，而所有的线程都可以向该队列推送和获取Goroutine。这里是一个最多以两个线程运行的应用的例子，线程数通过将 `GOMAXPROCS` 设置为 2 来定义，而线程也是之后的架构中的 `M`。
 
-![最初版本的调度器只有一个全局队列](/Users/sarahchen/AJourneyToGo/img/ccn-scheduler-affinity-2.png)
+![最初版本的调度器只有一个全局队列](../img/ccn-scheduler-affinity-2.png)
 
 只有一个队列无法保证 Goroutine 能够被分配到与原来相同的线程上。最先就绪的线程会获取一个等待状态的 Goroutine 并执行该 Goroutine。因此，这涉及 Goroutine 从一个线程转移到另一个线程，而这在性能方面开销很大。这里是一个阻塞 channel 的例子：
 
 - 7 号 Goroutine 在 channel 上阻塞并且等待信息的到来。一旦获取信息，该 Goroutine 就被放在全局队列中：
 
-![](/Users/sarahchen/AJourneyToGo/img/ccn-scheduler-affinity-3.png)
+![](../img/ccn-scheduler-affinity-3.png)
 
 - 之后，channel 推送消息，并且 8 号 Goroutine 在 channel 上阻塞，在此期间，X 号 Goroutine 会在可用线程上运行。
 
-![](/Users/sarahchen/AJourneyToGo/img/ccn-scheduler-affinity-4.png)
+![](../img/ccn-scheduler-affinity-4.png)
 
 - 7 号 Goroutine 现在运行在可用线程上：
 
-![](/Users/sarahchen/AJourneyToGo/img/ccn-scheduler-affinity-5.png)
+![](../img/ccn-scheduler-affinity-5.png)
 
 Goroutine 现如今运行在与之前不同的线程上。具有一个单一的全局队列也迫使调度器去持有一个涵盖所有 Goroutine 调度操作的，单个的全局互斥锁。这里是将 `GOMAXPROCS` 调高后，`pprof` 生成的 CPU profile 信息：
 
@@ -62,7 +62,7 @@ Go 1.1 带来了[新的调度器实现](https://docs.google.com/document/d/1TTj4
 
 由于线程会因系统调用而阻塞，同时阻塞的线程数是没有限制的，Go 引入了处理器的概念。一个处理器 `P` 代表一个运行的 OS 线程，并且会管理本地的 Goroutine 队列。这是新架构：
 
-![](/Users/sarahchen/AJourneyToGo/img/ccn-scheduler-affinity-6.png)
+![](../img/ccn-scheduler-affinity-6.png)
 
 这是使用 Go 1.1.2 中新架构的新的基准测试结果：
 
@@ -105,11 +105,11 @@ Total: 630 samples
 
 在 channel 上来回通信的 Goroutine 最终会频繁阻塞，也就是像之前看到的那样，频繁在本地队列重新排队。然而，由于本地队列是一个 FIFO（先进先出）的实现，如果其他 Goroutine 占用了线程，解除阻塞的 Goroutine 无法保证能够尽快运行。这是一个先前在 channel 上阻塞，现在可以运行的 Goroutine 的例子：
 
-![](/Users/sarahchen/AJourneyToGo/img/ccn-scheduler-affinity-7.png)
+![](../img/ccn-scheduler-affinity-7.png)
 
 9 号 Goroutine 在 channel 上阻塞后恢复。然后，在它运行之前必须等待 2 号，5 号和 4 号先运行。在这个例子中，5 号 Goroutine 会占用线程，延迟了 9 号 Goroutine 的运行，同时使得 9 号可能被其他处理器所窃取。从 Go 1.5 开始，得益于 `P` 的特殊属性，从阻塞 channel 返回的 Goroutine 会优先运行：
 
-![](/Users/sarahchen/AJourneyToGo/img/ccn-scheduler-affinity-8.png)
+![](../img/ccn-scheduler-affinity-8.png)
 
 9 号 Goroutine 现在被标记为下一个可运行。这个新的优先次序使得该 Goroutine 在通道上再次阻塞之前快速运行。之后，其他的 Goroutine 再分配运行时间。这个改动对于 Go 标准库[提升某些包的性能](https://raw.githubusercontent.com/golang/go/commit/e870f06c3f49ed63960a2575e330c2c75fc54a34)有着总体上正向的影响。
 

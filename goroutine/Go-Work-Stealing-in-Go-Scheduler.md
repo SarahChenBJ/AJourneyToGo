@@ -8,7 +8,7 @@
 
 Go 使用两级队列来管理等待中的 Goroutine，分别为本地队列和全局队列。每一个处理器都拥有本地队列，而全局队列是唯一的，且能被所有的处理器访问到：
 
-![Global and local queues](/Users/sarahchen/AJourneyToGo/img/ws-1.png)
+![Global and local queues](../img/ws-1.png)
 
 每个本地队列都有最大容量，为 256。在容量满了之后，任意新到来的 Goroutine 都会被放置到全局队列。下面的例子是，生产了上千个 Goroutine 的程序：
 
@@ -35,7 +35,7 @@ func main() {
 
 下面是拥有两个处理器的调度器追踪数据（traces）：
 
-![Details of the local and global queues](/Users/sarahchen/AJourneyToGo/img/ws-2.png)
+![Details of the local and global queues](../img/ws-2.png)
 
 追踪数据通过 `runqueue` 展示了全局队列中 Goroutine 的数量，以及方括号中 `[3 256]` 的本地队列 Goroutine 数量（分别为 `P0` 和 `P1`）。当本地队列满了，积压了 256 个等待中的 Goroutine 后，下一个 Goroutine 会被压栈到全局队列中，正如我们从 `runqueue` 看到的数量增长一样。
 
@@ -43,7 +43,7 @@ func main() {
 
 下面是上一个例子的图示：
 
-![Local queues have up to 256 Goroutines](/Users/sarahchen/AJourneyToGo/img/ws-3.png)
+![Local queues have up to 256 Goroutines](../img/ws-3.png)
 
 不过，我们还想知道，为什么本地队列 `P0` 在上一个列子中不为空。因为 Go 使用了其他策略确保每个处理器都有任务处理。
 
@@ -58,15 +58,15 @@ func main() {
 
 在我们前面的例子中，主函数在 `P1` 上运行并创建 Goroutine。当第一批 gourinte 已经进入了 `P1` 的本地队列时，`P0` 正在寻找任务。然而，它的本地队列，全局队列，以及网络轮询器都是空的。最后的解决方法是从 `P1` 中窃取任务。
 
-![Work-stealing by P0](/Users/sarahchen/AJourneyToGo/img/ws-4.png)
+![Work-stealing by P0](../img/ws-4.png)
 
 下面是调度器在发生任务窃取前后的追踪数据：
 
-![Work-stealing by P0](/Users/sarahchen/AJourneyToGo/img/ws-8.png)
+![Work-stealing by P0](../img/ws-8.png)
 
 追踪数据展示了，处理器是如何从其它处理器中窃取任务的。它从（其他处理器的）本地队列中取走一半的 Goroutine；在七个 Goroutine 中，偷走了四个 —— 其中一个立马在 `P0` 执行，剩下的放到本地队列。现在处理器间工作处于负载良好的状态。这能通过执行 tracing 来确认：
 
-![img](/Users/sarahchen/AJourneyToGo/img/ws-5.png)
+![img](../img/ws-5.png)
 
 Goroutine 被合理地分发，然后因为没有 I/O，Goroutine 被链式执行而不需要切换。我们现在看一下，当出现例如涉及到文件操作等 I/O 时，会发生什么。
 
@@ -100,11 +100,11 @@ func main() {
 
 变量 `a` 随着时间以文件的字节数增加，下面是新的追踪数据：
 
-![img](/Users/sarahchen/AJourneyToGo/img/ws-6.png)
+![img](../img/ws-6.png)
 
 在这个例子中，我们能看到每一个 Goroutine 不只被一个处理器处理。在系统调用的情况下，当调用完成后，Go 使用网络轮询器从全局队列中把 gouroutine 取回来。这里是 Goroutine #35 的一个示意图：
 
-![I/O operations put the work back to the global queue](/Users/sarahchen/AJourneyToGo/img/ws-7.png)
+![I/O operations put the work back to the global queue](../img/ws-7.png)
 
 当一个处理器能从全局队列中获取任务，第一个可用的处理器（ `P`） 会执行这个 Goroutine。这个行为解释了，为什么一个 Goroutine 能在不同的处理器中运行，也展示了 Go 是如何让空闲的处理器资源运行 Goroutine，从而进行系统调用的优化。
 

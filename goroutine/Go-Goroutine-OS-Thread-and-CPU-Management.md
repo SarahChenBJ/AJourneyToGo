@@ -18,7 +18,7 @@ P - processor, a resource that is required to execute Go code.
 
 `P`, `M`, `G` 模型图解：
 
-![P, M, G diagram](/Users/sarahchen/AJourneyToGo/img/goroutine-os-cpu-01.png)
+![P, M, G diagram](../img/goroutine-os-cpu-01.png)
 
 每个协程（`G`）运行在与一个逻辑 CPU（`P`）相关联的 OS 线程（`M`）上。我们一起通过一个简单的示例来看 Go 是怎么管理他们的：
 
@@ -43,19 +43,19 @@ func main() {
 
 首先，Go 根据机器逻辑 CPU 的个数来创建不同的 `P`，并且把它们保存在一个空闲 `P` 的 list 里。
 
-![P initialization](/Users/sarahchen/AJourneyToGo/img/goroutine-os-cpu-02.png)
+![P initialization](../img/goroutine-os-cpu-02.png)
 
 然后，为了更好地工作新创建的已经准备好的协程会唤醒一个 `P`。这个 `P` 通过与之相关联的 OS 线程来创建一个 `M`：
 
-![OS thread creation](/Users/sarahchen/AJourneyToGo/img/goroutine-os-cpu-03.png)
+![OS thread creation](../img/goroutine-os-cpu-03.png)
 
 然而，像 `P` 那样，系统调用返回的甚至被 gc 强行停止的空闲的 `M` — 比如没有协程在等待运行 — 也会被加到一个空闲 list：
 
-![M and P idle list](/Users/sarahchen/AJourneyToGo/img/goroutine-os-cpu-04.png)
+![M and P idle list](../img/goroutine-os-cpu-04.png)
 
 在程序启动阶段，Go 就已经创建了一些 OS 线程并与 `M` 想关联了。在我们的例子中，打印 `hello` 的第一个协程会使用主协程，第二个会从这个空闲 list 中获取一个 `M` 和 `P`：
 
-![M and P pulled from the idle list](/Users/sarahchen/AJourneyToGo/img/goroutine-os-cpu-05.png)
+![M and P pulled from the idle list](../img/goroutine-os-cpu-05.png)
 
 现在我们已经掌握了协程和线程管理的基本要义，来一起看看什么情形下 Go 会用比 `P` 多的 `M`，在系统调用时怎么管理协程。
 
@@ -77,7 +77,7 @@ func main() {
 
 文件读取的流程如下：
 
-![Syscall handoffs P](/Users/sarahchen/AJourneyToGo/img/goroutine-os-cpu-06.png)
+![Syscall handoffs P](../img/goroutine-os-cpu-06.png)
 
 `P0` 现在在空闲 list 中，有可能被唤醒。当系统调用 exit 时，Go 会遵守下面的规则，直到有一个命中了。
 
@@ -95,11 +95,11 @@ func main() {
 
 当第一个系统调用完成且显式地声明了资源还没有准备好，协程会在 network poller 通知它资源准备就绪之前一直处于停驻状态。在这种情形下，线程 `M` 不会阻塞：
 
-![Network poller waiting for the resource](/Users/sarahchen/AJourneyToGo/img/goroutine-os-cpu-07.png)
+![Network poller waiting for the resource](../img/goroutine-os-cpu-07.png)
 
 在 Go 调度器在等待信息时协程会再次运行。调度器在获取到等待的信息后会询问 network poller 是否有协程在等待被运行。
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-os-cpu-08.png)
+![](../img/goroutine-os-cpu-08.png)
 
 如果多个协程都准备好了，只有一个会被运行，其他的会被加到全局的可运行队列中，以备后续的调度。
 
@@ -133,7 +133,7 @@ func main() {
 
 利用追踪工具得到的线程数如下：
 
-![](/Users/sarahchen/AJourneyToGo/img/goroutine-os-cpu-09.png)
+![](../img/goroutine-os-cpu-09.png)
 
 由于 Go 优化了线程使用，所以当协程阻塞时，它仍可复用，这就解释了为什么图中的数跟示例代码循环中的数不一致。
 
