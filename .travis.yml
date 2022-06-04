@@ -15,13 +15,13 @@ script:
 - gitbook build
 
 after_script:
-  - cd ./public
+  - cd ./_book
   - git init
   - git config user.name "sarahchen"
   - git config user.email "eleven.chenxu@gmail.com"
   - git add .
   - git commit -m "Update docs"
-  - git push -force --quiet "https://${GH_TOKEN}@${GH_REF}" master:masger
+  - git push -force --quiet "https://${GH_TOKEN}@${GH_REF}" master:master
 
 env:
   global:
