@@ -1,7 +1,7 @@
 # Summary
 
 * [Introduction](README.md)
-* [GOROUTINEEEE](goroutine/list.md)
+* [GOROUTINE](goroutine/list.md)
   * [Go:How Does a Goroutine Start and Exit?](goroutine/Go-How-Does-a-Goroutine-Start-and-Exit.md)
   * [Go: gsignal, Master of Signals](goroutine/Go-gsignal-Master-of-Signals.md)
   * [Go:What Does a Goroutine Switch Actually Involve?](goroutine/Go-How-Does-a-Goroutine-Start-and-Exit.md)
