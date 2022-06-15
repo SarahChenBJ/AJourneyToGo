@@ -70,3 +70,7 @@ v := <-ch
 
 via: https://medium.com/a-journey-with-go/go-g0-special-goroutine-8c778c6704d8
 
+作者：[Vincent Blanchon](https://medium.com/@blanchon.vincent)
+
+译者: [SarahC](https://github.com/SarahChenBJ)
+

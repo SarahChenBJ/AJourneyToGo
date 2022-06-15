@@ -278,3 +278,9 @@ framesize += StackSystem;
 Go 的栈管理非常高效，也很容易理解。Golang 并不是唯一选择不使用分段堆栈的语言，[Rust 也出于同样的原因](https://mail.mozilla.org/pipermail/rust-dev/2013-November/006314.html)决定不使用这个这个策略。
 
 
+--- 
+via: https://medium.com/a-journey-with-go/go-how-does-the-goroutine-stack-size-evolve-447fc02085e5
+
+作者：[Vincent Blanchon](https://medium.com/@blanchon.vincent)
+
+译者: [SarahC](https://github.com/SarahChenBJ)

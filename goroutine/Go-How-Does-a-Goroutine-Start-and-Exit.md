@@ -116,3 +116,9 @@ func main() {
 
 这段代码中, defer 中的函数会被先执行. 之后会执行所有 `goexit`之前所有的代码, 然后退出. 
 
+--- 
+via: https://medium.com/a-journey-with-go/go-how-does-a-goroutine-start-and-exit-2b3303890452
+
+作者：[Vincent Blanchon](https://medium.com/@blanchon.vincent)
+
+译者: [SarahC](https://github.com/SarahChenBJ)

@@ -116,3 +116,7 @@ Total: 630 samples
 ---
 via: https://medium.com/a-journey-with-go/go-concurrency-scheduler-affinity-3b678f490488
 
+作者：[Vincent Blanchon](https://medium.com/@blanchon.vincent)
+
+译者: [SarahC](https://github.com/SarahChenBJ)
+

@@ -137,3 +137,9 @@ func main() {
 
 由于 Go 优化了线程使用，所以当协程阻塞时，它仍可复用，这就解释了为什么图中的数跟示例代码循环中的数不一致。
 
+--- 
+via: https://medium.com/a-journey-with-go/go-goroutine-os-thread-and-cpu-management-2f5a5eaf518a
+
+作者：[Vincent Blanchon](https://medium.com/@blanchon.vincent)
+
+译者: [SarahC](https://github.com/SarahChenBJ)

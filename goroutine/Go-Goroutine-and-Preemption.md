@@ -171,3 +171,10 @@ func main() {
 *我提议 Go 转向使用 “非协作式抢占”的实现方式，使得 Goroutine 可以在必要的时候被抢占，而不再需要显示的做抢占检查。这样就可以解决抢占延迟的问题，也会减少运行时的开销。*
 
 同时这篇文章也对比了几种实现技术的利弊，预计这个“非协作式抢占”会在下一个 Go 版本中实现。
+
+---
+via: https://medium.com/a-journey-with-go/go-goroutine-and-preemption-d6bc2aa2f4b7
+
+作者：[Vincent Blanchon](https://medium.com/@blanchon.vincent)
+
+译者: [SarahC](https://github.com/SarahChenBJ)

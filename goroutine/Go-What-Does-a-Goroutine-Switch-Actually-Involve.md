@@ -2,7 +2,7 @@
 
 ℹ️ 本文基于 Go 1.13 版本。
 
-Goroutine 很轻，它只需要 2Kb 的内存堆栈即可运行。另外，它们运行起来也很廉价，将一个 Goroutine 切换到另一个的过程不牵涉到很多的操作。在深入 Goroutine 切换过程之前，让我们回顾一下 Goroutine 的切换在更高的层次上是如何进行的。
+轻量级的 Goroutine 只需要 2Kb 的内存堆栈即可运行。同时，它们运行起来也很廉价，将一个 Goroutine 切换到另一个的过程不牵涉到很多的操作。在深入 Goroutine 切换过程之前，让我们回顾一下 Goroutine 的切换在更高的层次上是如何进行的。
 
 在更好的理解本文内容，请参考 [Go: Goroutine, OS 线程及 CPU 管理](Go-Goroutine-OS-Thread-and-CPU-Management.md) 以了解本文中涉及的一些概念。
 
@@ -100,5 +100,8 @@ Go 根据两种断点将 Goroutine 调度到线程上：
 
 ---
 
-via: <https://medium.com/a-journey-with-go/go-what-does-a-goroutine-switch-actually-involve-394c202dddb7>
+via: https://medium.com/a-journey-with-go/go-what-does-a-goroutine-switch-actually-involve-394c202dddb7
 
+作者：[Vincent Blanchon](https://medium.com/@blanchon.vincent)
+
+译者: [SarahC](https://github.com/SarahChenBJ)

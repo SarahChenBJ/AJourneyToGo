@@ -50,3 +50,9 @@ Go 也赋予了通道停止被通知的能力（`Stop(os.Signal)` 函数）和�
 
 ![](../img/gsignal-09.png)
 
+---
+via:https://medium.com/a-journey-with-go/go-gsignal-master-of-signals-329f7ff39391
+
+作者：[Vincent Blanchon](https://medium.com/@blanchon.vincent)
+
+译者: [SarahC](https://github.com/SarahChenBJ)

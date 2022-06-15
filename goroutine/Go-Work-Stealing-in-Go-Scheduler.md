@@ -108,3 +108,9 @@ func main() {
 
 当一个处理器能从全局队列中获取任务，第一个可用的处理器（ `P`） 会执行这个 Goroutine。这个行为解释了，为什么一个 Goroutine 能在不同的处理器中运行，也展示了 Go 是如何让空闲的处理器资源运行 Goroutine，从而进行系统调用的优化。
 
+--- 
+via: https://medium.com/a-journey-with-go/go-work-stealing-in-go-scheduler-d439231be64d
+
+作者：[Vincent Blanchon](https://medium.com/@blanchon.vincent)
+
+译者: [SarahC](https://github.com/SarahChenBJ)
